@@ -3,9 +3,9 @@ import { getFirestore, collection, addDoc, getDocs }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "여기에_키",
-  authDomain: "여기에",
-  projectId: "여기에",
+  apiKey: "AIzaSyBmUOvHROXYi9SXDaKTke33IKQcRYJ8b2c",
+  authDomain: "memo-site-2fb45.firebaseapp.com",
+  projectId: "memo-site-2fb45",
 };
 
 const app = initializeApp(firebaseConfig);
