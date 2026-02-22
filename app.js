@@ -6,6 +6,10 @@ const firebaseConfig = {
   apiKey: "AIzaSyBmUOvHROXYi9SXDaKTke33IKQcRYJ8b2c",
   authDomain: "memo-site-2fb45.firebaseapp.com",
   projectId: "memo-site-2fb45",
+  storageBucket: "memo-site-2fb45.firebasestorage.app",
+  messagingSenderId: "156606916422",
+  appId: "1:156606916422:web:dd1232b7bdf84036276747",
+  measurementId: "G-79H13B5RF5"
 };
 
 const app = initializeApp(firebaseConfig);
