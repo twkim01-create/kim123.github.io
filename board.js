@@ -1,7 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getFirestore, collection, addDoc, getDocs,
-  doc, getDoc
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  getDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -38,14 +43,17 @@ async function loadPosts() {
 
   querySnapshot.forEach((docSnap) => {
     const li = document.createElement("li");
-    li.innerHTML = `<a href="view.html?id=${docSnap.id}">
-      ${docSnap.data().title}
-    </a>`;
+    li.innerHTML = `
+      <a href="view.html?id=${docSnap.id}">
+        ${docSnap.data().title}
+      </a>
+      <button onclick="deletePost('${docSnap.id}')">삭제</button>
+    `;
     list.appendChild(li);
   });
 }
 
-/* 상세 보기 */
+/* 글 상세 */
 async function loadPostDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
@@ -57,10 +65,38 @@ async function loadPostDetail() {
   if (docSnap.exists()) {
     document.getElementById("postTitle").textContent = docSnap.data().title;
     document.getElementById("postContent").textContent = docSnap.data().content;
+    loadComments(id);
   }
 }
 
-/* 댓글 */
+/* 글 삭제 */
+async function deletePost(id) {
+  if (!confirm("정말 삭제할까요?")) return;
+
+  await deleteDoc(doc(db, "posts", id));
+  alert("삭제 완료");
+  location.reload();
+}
+
+/* 댓글 불러오기 */
+async function loadComments(postId) {
+  const querySnapshot = await getDocs(collection(db, "posts", postId, "comments"));
+  const list = document.getElementById("commentList");
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  querySnapshot.forEach((docSnap) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${docSnap.data().text}
+      <button onclick="deleteComment('${postId}','${docSnap.id}')">삭제</button>
+    `;
+    list.appendChild(li);
+  });
+}
+
+/* 댓글 추가 */
 async function addComment() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
@@ -75,8 +111,19 @@ async function addComment() {
   location.reload();
 }
 
+/* 댓글 삭제 */
+async function deleteComment(postId, commentId) {
+  if (!confirm("댓글 삭제할까요?")) return;
+
+  await deleteDoc(doc(db, "posts", postId, "comments", commentId));
+  alert("삭제 완료");
+  location.reload();
+}
+
 loadPosts();
 loadPostDetail();
 
 window.submitPost = submitPost;
 window.addComment = addComment;
+window.deletePost = deletePost;
+window.deleteComment = deleteComment;
